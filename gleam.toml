@@ -27,6 +27,7 @@ lustre = ">= 5.6.0 and < 6.0.0"
 parrot = ">= 2.2.1 and < 3.0.0"
 envoy = ">= 1.1.0 and < 2.0.0"
 snag = ">= 1.2.0 and < 2.0.0"
+simplifile = ">= 2.3.2 and < 3.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
