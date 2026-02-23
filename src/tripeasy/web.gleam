@@ -15,8 +15,9 @@ pub fn middleware(
   use <- wisp.log_request(req)
   use <- wisp.rescue_crashes
   use req <- wisp.csrf_known_header_protection(req)
-
   use req <- wisp.handle_head(req)
+
+  use <- wisp.serve_static(req, under: "/static", from: "priv/static")
 
   handler(req)
 }
