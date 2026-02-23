@@ -14,6 +14,7 @@ pub fn middleware(
 
   use <- wisp.log_request(req)
   use <- wisp.rescue_crashes
+  use req <- wisp.csrf_known_header_protection(req)
 
   use req <- wisp.handle_head(req)
 
