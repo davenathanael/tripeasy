@@ -1,59 +1,49 @@
 import envoy
 import gleam/int
-import gleam/list
 import gleam/result
-import gleam/string
-import simplifile
+import snag
+import tripeasy/utils
 
 pub type Config {
-  Config(secret_key_base: String, port: Int, database_url: String)
+  Config(
+    secret_key_base: String,
+    port: Int,
+    database_url: String,
+    priv_static_directory: String,
+    static_path: String,
+  )
 }
 
-pub fn load() -> Result(Config, String) {
-  use _ <- result.try(load_env_file(".env"))
+pub fn load() -> snag.Result(Config) {
+  use _ <- result.try(utils.load_env_file(".env"))
 
   use secret_key_base <- result.try(
     envoy.get("SECRET_KEY_BASE")
-    |> result.replace_error("Unable to load SECRET_KEY_BASE"),
+    |> snag.replace_error("Unable to load SECRET_KEY_BASE"),
   )
 
   use port <- result.try(
     envoy.get("PORT")
-    |> result.replace_error("Unable to load PORT"),
+    |> snag.replace_error("Unable to load PORT"),
   )
   use port <- result.try(
     int.parse(port)
-    |> result.replace_error("Unable to parse PORT"),
+    |> snag.replace_error("Unable to parse PORT"),
   )
 
   use database_url <- result.try(
     envoy.get("DATABASE_URL")
-    |> result.replace_error("Unable to load DATABASE_URL"),
+    |> snag.replace_error("Unable to load DATABASE_URL"),
   )
 
-  Ok(Config(secret_key_base:, port:, database_url:))
-}
+  let priv_static_directory = "priv/static"
+  let static_path = "/static"
 
-fn load_env_file(path: String) -> Result(Nil, String) {
-  use lines <- result.try(
-    simplifile.read(from: path)
-    |> result.map_error(fn(err) {
-      "Unable to load .env file: " <> simplifile.describe_error(err)
-    }),
-  )
-
-  lines
-  |> string.split("\n")
-  |> list.map(fn(line) {
-    let line = string.trim(line)
-    case
-      line
-      |> string.split_once("=")
-    {
-      Ok(#(key, value)) -> envoy.set(key, value) |> Ok
-      Error(_) -> Error("Unable to load env: " <> line)
-    }
-  })
-  |> result.all
-  |> result.replace(Nil)
+  Ok(Config(
+    secret_key_base:,
+    port:,
+    database_url:,
+    priv_static_directory:,
+    static_path:,
+  ))
 }

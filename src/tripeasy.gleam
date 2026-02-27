@@ -1,5 +1,5 @@
-import gleam/io
+import tripeasy/http_server
 
 pub fn main() -> Nil {
-  io.println("Hello from tripeasy!")
+  http_server.run()
 }
